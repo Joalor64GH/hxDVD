@@ -12,7 +12,8 @@ class FileFinder
         ".gbc",
         ".gba",
         ".dcf",
-        ".bin"
+        ".bin",
+        ".dvi"
     ];
 
 }
