@@ -20,4 +20,3 @@ Or alternatively, you can use this to install the latest updates:
 ```yml
 haxelib git hxDVD https://github.com/Joalor64GH/hxDVD
 ```
-

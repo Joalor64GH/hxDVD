@@ -1,8 +1,9 @@
 package players;
 
 import DVDDetector;
+import playerUtil.Movie
 
-class MoviePlayer extends DVDDetector
+class MoviePlayer extends Movie
 {
     
 }
