@@ -4,19 +4,28 @@ Based off of hxCodec, but better
 Also, everything is unfinished
 
 ## Installation
-If this ever gets finished, put this in your Project.xml:
+
+### Step 1: Editing `Project.xml`
+If you have a custom defines section, add the following line:
 
 ```xml
-<haxelib name="hxDVD" if="windows || mac" />
+<define name="DVD_PLUGIN" if="windows || mac" />
 ```
 
-Then, put this in your workflow:
+Then, add this:
+
+```xml
+<haxelib name="hxDVD" />
+```
+
+### Step 2: Editing your Workflow
+Add this to your workflow:
 
 ```yml
 haxelib install hxDVD
 ```
 
-Or alternatively, you can use this to install the latest updates:
+Alternatively, use this to install the latest updates:
 ```yml
 haxelib git hxDVD https://github.com/Joalor64GH/hxDVD
 ```
