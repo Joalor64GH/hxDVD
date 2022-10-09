@@ -1,6 +1,9 @@
 package;
 
-class DVD
+import DVDDetector;
+import DVDHandler;
+
+class DVD extends DVDDetector
 {
     
 }
