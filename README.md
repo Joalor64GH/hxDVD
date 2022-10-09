@@ -15,7 +15,7 @@ If you have a custom defines section, add the following line:
 Then, add this:
 
 ```xml
-<haxelib name="hxDVD" />
+<haxelib name="hxDVD" if="DVD_PLUGIN"/>
 ```
 
 ### Step 2: Editing your Workflow
