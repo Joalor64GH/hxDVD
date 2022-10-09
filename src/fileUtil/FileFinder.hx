@@ -1,8 +1,8 @@
 package fileUtil;
 
-import fileUtil.FileTypes.dvdExts;
+import fileUtil.FileTypes;
 
-class FileFinder
+class FileFinder extends FileTypes
 {
 
 }
