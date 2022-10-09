@@ -91,7 +91,7 @@ class DVDDetector
     ')
     @:native('GetDvdDriveLetter')
     public static function GetDvdDriveLetter(){
-        return dvdDriveLetter;
+        return dvdDriveLetter; // Idk if this works or not, joalor you need to test this please
     }
 
     #end
