@@ -93,6 +93,124 @@ class DVDDetector
     public static function GetDvdDriveLetter(){
         return dvdDriveLetter; // Idk if this works or not, joalor you need to test this please
     }
+    @:functionCode('
+    // Gets the DVD status
+    int GetDvdStatus()
+    {   
+        const std::string dvdDriveLetter = GetDvdDriveLetter();
+    
+        if ( dvdDriveLetter.empty() ) return -1;
+        
+        const std::string strDvdPath =  "\\\\.\\"
+                + dvdDriveLetter; 
+    
+        HANDLE hDevice;               // handle to the drive to be examined     
+        int iResult = -1;             // results flag
+        ULONG ulChanges = 0;  
+        DWORD dwBytesReturned;  
+        T_SPDT_SBUF sptd_sb;          //SCSI Pass Through Direct variable.  
+        byte DataBuf[ 8 ];            //Buffer for holding data to/from drive.   
+        
+        hDevice = CreateFile( strDvdPath.c_str(),               // drive                        
+                            0,                                // no access to the drive                        
+                            FILE_SHARE_READ,                  // share mode                        
+                            NULL,                             // default security attributes                        
+                            OPEN_EXISTING,                    // disposition                        
+                            FILE_ATTRIBUTE_READONLY,          // file attributes                        
+                            NULL);   
+        
+        // If we cannot access the DVD drive 
+        if (hDevice == INVALID_HANDLE_VALUE)                    
+        {           
+            return -1;  
+        }           
+        
+        // A check to see determine if a DVD has been inserted into the drive only when iResult = 1.  
+        // This will do it more quickly than by sending target commands to the SCSI
+        iResult = DeviceIoControl((HANDLE) hDevice,              // handle to device                             
+                                    IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode                             
+                                    NULL,                        // lpInBuffer                             
+                                    0,                           // nInBufferSize                             
+                                    &ulChanges,                  // lpOutBuffer                             
+                                    sizeof(ULONG),               // nOutBufferSize                             
+                                    &dwBytesReturned ,           // number of bytes returned                             
+                                    NULL );                      // OVERLAPPED structure   
+        
+        CloseHandle( hDevice );   
+        
+        // Dont request the tray status as we often dont need it      
+        if( iResult == 1 )  return 2;   
+        
+        hDevice = CreateFile( strDvdPath.c_str(),                        
+                            GENERIC_READ | GENERIC_WRITE,                        
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,                        
+                            NULL,                        
+                            OPEN_EXISTING,                        
+                            FILE_ATTRIBUTE_READONLY,                        
+                            NULL);   
+        
+        if (hDevice == INVALID_HANDLE_VALUE)  
+        {           
+            return -1;  
+        }   
+        
+        sptd_sb.sptd.Length = sizeof( SCSI_PASS_THROUGH_DIRECT );  
+        sptd_sb.sptd.PathId = 0;  
+        sptd_sb.sptd.TargetId = 0;  
+        sptd_sb.sptd.Lun = 0;  
+        sptd_sb.sptd.CdbLength = 10;  
+        sptd_sb.sptd.SenseInfoLength = MAX_SENSE_LEN;  
+        sptd_sb.sptd.DataIn = SCSI_IOCTL_DATA_IN;  
+        sptd_sb.sptd.DataTransferLength = sizeof(DataBuf);  
+        sptd_sb.sptd.TimeOutValue = 2;  
+        sptd_sb.sptd.DataBuffer = (PVOID) &( DataBuf );  
+        sptd_sb.sptd.SenseInfoOffset = sizeof( SCSI_PASS_THROUGH_DIRECT );   
+        sptd_sb.sptd.Cdb[ 0 ]  = 0x4a;  
+        sptd_sb.sptd.Cdb[ 1 ]  = 1;  
+        sptd_sb.sptd.Cdb[ 2 ]  = 0;  
+        sptd_sb.sptd.Cdb[ 3 ]  = 0;  
+        sptd_sb.sptd.Cdb[ 4 ]  = 0x10;  
+        sptd_sb.sptd.Cdb[ 5 ]  = 0; 
+        sptd_sb.sptd.Cdb[ 6 ]  = 0;  
+        sptd_sb.sptd.Cdb[ 7 ]  = 0;  
+        sptd_sb.sptd.Cdb[ 8 ]  = 8;  
+        sptd_sb.sptd.Cdb[ 9 ]  = 0;  
+        sptd_sb.sptd.Cdb[ 10 ] = 0; 
+        sptd_sb.sptd.Cdb[ 11 ] = 0;  
+        sptd_sb.sptd.Cdb[ 12 ] = 0;  
+        sptd_sb.sptd.Cdb[ 13 ] = 0;  
+        sptd_sb.sptd.Cdb[ 14 ] = 0;  
+        sptd_sb.sptd.Cdb[ 15 ] = 0;   
+        
+        ZeroMemory(DataBuf, 8);  
+        ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);   
+        
+        //Send the command to drive - request tray status for drive 
+        iResult = DeviceIoControl((HANDLE) hDevice,                            
+                                IOCTL_SCSI_PASS_THROUGH_DIRECT,                            
+                                (PVOID)&sptd_sb, 
+                                (DWORD)sizeof(sptd_sb),                            
+                                (PVOID)&sptd_sb, 
+                                (DWORD)sizeof(sptd_sb),                            
+                                &dwBytesReturned,                            
+                                NULL);   
+        
+        CloseHandle(hDevice);   
+        
+        if(iResult)  
+        {     
+            if (DataBuf[5] == 0 ) iResult = 0;        // DVD tray closed    
+            else if( DataBuf[5] == 1 ) iResult = 1;   // DVD tray open  
+            else return iResult =2;                   // DVD tray closed, media present  
+        } 
+    
+        return iResult;
+    }
+    ')
+    public static function GetDvdStatus(){
+        return iResult;
+    }
+
 
     #end
 }
