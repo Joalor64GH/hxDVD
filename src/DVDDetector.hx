@@ -91,7 +91,7 @@ class DVDDetector
     ')
     // @:native('GetDvdDriveLetter')
     public static function GetDvdDriveLetter(){
-        return dvdDriveLetter; // Idk if this works or not, joalor you need to test this please
+        return dvdDriveLetter;
     }
     @:functionCode('
     // Gets the DVD status
