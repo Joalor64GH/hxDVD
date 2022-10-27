@@ -27,7 +27,7 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT
     USHORT Length;    
     UCHAR ScsiStatus;    
     UCHAR PathId;    
-    UCHAR TargetId;    
+    UCHAR TargetId;
     UCHAR Lun;    
     UCHAR CdbLength;    
     UCHAR SenseInfoLength;    
@@ -211,6 +211,33 @@ class DVDDetector
         return iResult;
     }
 
+    @:functionCode('
+    // Uses the following information to obtain the status of a DVD/CD-ROM drive:
+    // 1. GetLogicalDriveStrings() to list all logical drives
+    // 2. GetDriveType() to obtain the type of drive
+    // 3. DeviceIoControl() to obtain the device status
+    //
+    switch( GetDvdStatus() )
+    {
+    case 0:
+        std::cout << "DVD tray closed, no media" << std::endl;
+        break;
+    case 1:
+        std::cout << "DVD tray open" << std::endl;
+        break;
+    case 2:
+        std::cout << "DVD tray closed, media present" << std::endl;
+        break;
+    default:
+        std::cout << "Drive not ready" << std::endl;
+        break;
+    }
+                
+    return 0;
+    ')
+    public static function main(){
+        return 0;
+    }
 
     #end
 }
