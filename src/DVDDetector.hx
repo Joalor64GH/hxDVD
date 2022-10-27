@@ -1,5 +1,7 @@
 package;
 
+import haxe.Exception;
+
 #if windows
 @:headerCode('
 // http://ws0.org/windows-how-to-get-the-tray-status-of-the-optical-drive/
@@ -238,6 +240,9 @@ class DVDDetector
     public static function main(){
         return 0;
     }
-
+    #elseif mac
+    // I don't have a mac so I can't test this on MacOS
+    trace('DVD detector is not available on MacOS');
+    throw new Exception('DVD detector is not available on MacOS');
     #end
 }
