@@ -1,7 +1,9 @@
 package players;
 
+#if !mac
 import DVDDetector;
-import playerUtil.Game
+#end
+import playerUtil.Game;
 
 class GamePlayer extends Game
 {
