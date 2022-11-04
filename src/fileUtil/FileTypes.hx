@@ -4,7 +4,7 @@ import fileUtil.FileFinder;
 
 class FileTypes extends FileFinder
 {
-    public static var dvdExts:Array<String> = [
+    public static inline final dvdExts:Array<String> = [
         ".iso",
         ".dvd",
         ".dvdr",

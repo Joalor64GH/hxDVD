@@ -30,7 +30,7 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT
     UCHAR ScsiStatus;    
     UCHAR PathId;    
     UCHAR TargetId;
-    UCHAR Lun;    
+    UCHAR Lun;
     UCHAR CdbLength;    
     UCHAR SenseInfoLength;    
     UCHAR DataIn;    
@@ -129,14 +129,14 @@ class DVDDetector
         
         // A check to see determine if a DVD has been inserted into the drive only when iResult = 1.  
         // This will do it more quickly than by sending target commands to the SCSI
-        iResult = DeviceIoControl((HANDLE) hDevice,              // handle to device                             
-                                    IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode                             
-                                    NULL,                        // lpInBuffer                             
-                                    0,                           // nInBufferSize                             
-                                    &ulChanges,                  // lpOutBuffer                             
-                                    sizeof(ULONG),               // nOutBufferSize                             
-                                    &dwBytesReturned ,           // number of bytes returned                             
-                                    NULL );                      // OVERLAPPED structure   
+        iResult = DeviceIoControl((HANDLE) hDevice,              // handle to device
+        IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
+        NULL,                        // lpInBuffer
+        0,                           // nInBufferSize
+        &ulChanges,                  // lpOutBuffer
+        sizeof(ULONG),               // nOutBufferSize
+        &dwBytesReturned ,           // number of bytes returned
+        NULL );                      // OVERLAPPED structure
         
         CloseHandle( hDevice );   
         
@@ -144,12 +144,12 @@ class DVDDetector
         if( iResult == 1 )  return 2;   
         
         hDevice = CreateFile( strDvdPath.c_str(),                        
-                            GENERIC_READ | GENERIC_WRITE,                        
-                            FILE_SHARE_READ | FILE_SHARE_WRITE,                        
-                            NULL,                        
-                            OPEN_EXISTING,                        
-                            FILE_ATTRIBUTE_READONLY,                        
-                            NULL);   
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        NULL,                        
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_READONLY,
+        NULL);
         
         if (hDevice == INVALID_HANDLE_VALUE)  
         {           
@@ -183,19 +183,19 @@ class DVDDetector
         sptd_sb.sptd.Cdb[ 13 ] = 0;  
         sptd_sb.sptd.Cdb[ 14 ] = 0;  
         sptd_sb.sptd.Cdb[ 15 ] = 0;   
-        
-        ZeroMemory(DataBuf, 8);  
-        ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);   
-        
-        //Send the command to drive - request tray status for drive 
-        iResult = DeviceIoControl((HANDLE) hDevice,                            
-                                IOCTL_SCSI_PASS_THROUGH_DIRECT,                            
-                                (PVOID)&sptd_sb, 
-                                (DWORD)sizeof(sptd_sb),                            
-                                (PVOID)&sptd_sb, 
-                                (DWORD)sizeof(sptd_sb),                            
-                                &dwBytesReturned,                            
-                                NULL);   
+
+        ZeroMemory(DataBuf, 8);
+        ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
+
+        //Send the command to drive - request tray status for drive
+        iResult = DeviceIoControl((HANDLE) hDevice,
+        IOCTL_SCSI_PASS_THROUGH_DIRECT,
+        (PVOID)&sptd_sb,
+        (DWORD)sizeof(sptd_sb),
+        (PVOID)&sptd_sb,
+        (DWORD)sizeof(sptd_sb),
+        &dwBytesReturned,
+        NULL);
         
         CloseHandle(hDevice);   
         
