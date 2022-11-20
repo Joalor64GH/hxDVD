@@ -9,7 +9,6 @@ import discReader.*;
 import fileUtil.*;
 import players.*;
 import playerUtil.*;
-import romUtil.*;
 
 class DVDHandler extends DVDDetector
 {
