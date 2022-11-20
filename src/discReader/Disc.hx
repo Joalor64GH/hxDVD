@@ -5,7 +5,7 @@ import discReader.DiscDetector;
 
 class Disc extends DiscReader
 {
-    var length:Float = 0; // song length or whatever shit is playing
+    public var length:Float = 0; // song length or whatever shit is playing
 
     public function new(){
         super();
